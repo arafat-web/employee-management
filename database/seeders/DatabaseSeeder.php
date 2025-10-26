@@ -16,6 +16,9 @@ class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
+        // Seed roles and permissions first
+        $this->call(RolesAndPermissionsSeeder::class);
+
         // Create Departments
         $departments = [
             ['name' => 'Human Resources', 'color' => '#e74c3c', 'description' => 'HR Department', 'active' => true],
@@ -82,6 +85,7 @@ class DatabaseSeeder extends Seeder
             'name' => 'Admin User',
             'email' => 'admin@example.com',
             'password' => Hash::make('password'),
+            'role_id' => 1, // Admin role
         ]);
 
         $adminEmployee = Employee::create([
@@ -105,11 +109,11 @@ class DatabaseSeeder extends Seeder
 
         // Create Sample Employees
         $sampleEmployees = [
-            ['first_name' => 'John', 'last_name' => 'Doe', 'email' => 'john.doe@example.com', 'department_id' => 2, 'position_id' => 5],
-            ['first_name' => 'Jane', 'last_name' => 'Smith', 'email' => 'jane.smith@example.com', 'department_id' => 3, 'position_id' => 8],
-            ['first_name' => 'Michael', 'last_name' => 'Johnson', 'email' => 'michael.j@example.com', 'department_id' => 4, 'position_id' => 10],
-            ['first_name' => 'Emily', 'last_name' => 'Williams', 'email' => 'emily.w@example.com', 'department_id' => 5, 'position_id' => 12],
-            ['first_name' => 'David', 'last_name' => 'Brown', 'email' => 'david.b@example.com', 'department_id' => 6, 'position_id' => 13],
+            ['first_name' => 'John', 'last_name' => 'Doe', 'email' => 'john.doe@example.com', 'department_id' => 2, 'position_id' => 5, 'role_id' => 5],
+            ['first_name' => 'Jane', 'last_name' => 'Smith', 'email' => 'jane.smith@example.com', 'department_id' => 3, 'position_id' => 8, 'role_id' => 4],
+            ['first_name' => 'Michael', 'last_name' => 'Johnson', 'email' => 'michael.j@example.com', 'department_id' => 4, 'position_id' => 10, 'role_id' => 2],
+            ['first_name' => 'Emily', 'last_name' => 'Williams', 'email' => 'emily.w@example.com', 'department_id' => 5, 'position_id' => 12, 'role_id' => 3],
+            ['first_name' => 'David', 'last_name' => 'Brown', 'email' => 'david.b@example.com', 'department_id' => 6, 'position_id' => 13, 'role_id' => 5],
         ];
 
         foreach ($sampleEmployees as $index => $empData) {
@@ -117,6 +121,7 @@ class DatabaseSeeder extends Seeder
                 'name' => $empData['first_name'] . ' ' . $empData['last_name'],
                 'email' => $empData['email'],
                 'password' => Hash::make('password'),
+                'role_id' => $empData['role_id'],
             ]);
 
             $employee = Employee::create([
