@@ -153,6 +153,70 @@
             padding: 0;
             margin-bottom: 20px;
         }
+
+        /* Accordion Styles */
+        .accordion {
+            --bs-accordion-border-color: #dee2e6;
+            --bs-accordion-btn-focus-box-shadow: none;
+        }
+
+        .accordion-item {
+            background-color: #fff;
+            border: 1px solid rgba(0,0,0,.125);
+            margin-bottom: 10px;
+            border-radius: 8px !important;
+            overflow: visible;
+        }
+
+        .accordion-header {
+            margin-bottom: 0;
+        }
+
+        .accordion-button {
+            background-color: #f8f9fa;
+            color: #333;
+            font-weight: 600;
+            padding: 1rem 1.25rem;
+            border: none;
+        }
+
+        .accordion-button:not(.collapsed) {
+            background-color: var(--primary-color);
+            color: white;
+            box-shadow: none;
+        }
+
+        .accordion-button:focus {
+            border-color: transparent;
+            box-shadow: none;
+        }
+
+        .accordion-button::after {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23333'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e");
+        }
+
+        .accordion-button:not(.collapsed)::after {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23fff'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.6 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e");
+        }
+
+        .accordion-body {
+            padding: 1.5rem 1.25rem;
+            background-color: #fff;
+        }
+
+        .accordion-collapse {
+            border-top: 1px solid #dee2e6;
+        }
+
+        .accordion-collapse.show {
+            display: block;
+            visibility: visible;
+            height: auto;
+        }
+
+        .accordion-collapse:not(.show) {
+            display: none;
+        }
     </style>
     @stack('styles')
 </head>
@@ -202,15 +266,20 @@
             </div>
             <div class="d-flex align-items-center">
                 <div class="me-3">
-                    <span class="text-muted">Welcome, <strong>{{ auth()->user()->name }}</strong></span>
+                    <span class="text-muted">
+                        Welcome, <strong>{{ auth()->user()->name }}</strong>
+                        @if(auth()->user()->role)
+                            <span class="badge bg-primary ms-1">{{ auth()->user()->role->display_name }}</span>
+                        @endif
+                    </span>
                 </div>
                 <div class="dropdown">
                     <button class="btn btn-link text-dark dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown">
                         <i class="bi bi-person-circle fs-4"></i>
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end">
-                        <li><a class="dropdown-item" href="#"><i class="bi bi-person"></i> Profile</a></li>
-                        <li><a class="dropdown-item" href="#"><i class="bi bi-gear"></i> Settings</a></li>
+                        <li><a class="dropdown-item" href="{{ route('profile.show') }}"><i class="bi bi-person"></i> My Profile</a></li>
+                        <li><a class="dropdown-item" href="{{ route('settings.index') }}"><i class="bi bi-gear"></i> Settings</a></li>
                         <li><hr class="dropdown-divider"></li>
                         <li>
                             <form method="POST" action="{{ route('logout') }}">
