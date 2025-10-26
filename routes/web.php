@@ -10,6 +10,8 @@ use App\Http\Controllers\PayrollController;
 use App\Http\Controllers\PerformanceReviewController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\SettingsController;
+use App\Http\Controllers\RoleController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 
@@ -93,6 +95,18 @@ Route::get('/settings/holidays', [SettingsController::class, 'holidays'])->name(
 Route::post('/settings/holidays', [SettingsController::class, 'storeHoliday'])->name('settings.storeHoliday');
 Route::put('/settings/holidays/{holiday}', [SettingsController::class, 'updateHoliday'])->name('settings.updateHoliday');
 Route::delete('/settings/holidays/{holiday}', [SettingsController::class, 'deleteHoliday'])->name('settings.deleteHoliday');
+
+// Roles & Permissions (Admin only or users with can_manage_roles permission)
+Route::middleware(['auth'])->group(function () {
+    Route::resource('roles', RoleController::class);
+});
+
+// Profile Management
+Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
+Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
+Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
+Route::get('/profile/password', [ProfileController::class, 'editPassword'])->name('profile.password.edit');
+Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password.update');
 
 // Logout
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
