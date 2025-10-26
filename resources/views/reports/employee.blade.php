@@ -100,7 +100,7 @@
                             <td>{{ $employee->employee_code }}</td>
                             <td>{{ $employee->full_name }}</td>
                             <td>{{ $employee->department->name ?? 'N/A' }}</td>
-                            <td>{{ $employee->position->title ?? 'N/A' }}</td>
+                            <td>{{ $employee->position->name ?? 'N/A' }}</td>
                             <td>{{ ucfirst($employee->gender) }}</td>
                             <td>${{ number_format($employee->salary, 2) }}</td>
                             <td>
