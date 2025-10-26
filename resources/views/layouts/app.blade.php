@@ -19,6 +19,10 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
+        a{
+            text-decoration: none !important
+        }
+
         .sidebar {
             position: fixed;
             top: 0;
@@ -177,13 +181,13 @@
             <a href="{{ route('payroll.index') }}" class="nav-link {{ request()->routeIs('payroll.*') ? 'active' : '' }}">
                 <i class="bi bi-cash-stack"></i> Payroll
             </a>
-            <a href="#" class="nav-link">
+            <a href="{{ route('performance.index') }}" class="nav-link {{ request()->routeIs('performance.*') ? 'active' : '' }}">
                 <i class="bi bi-graph-up"></i> Performance
             </a>
-            <a href="#" class="nav-link">
+            <a href="{{ route('reports.index') }}" class="nav-link {{ request()->routeIs('reports.*') ? 'active' : '' }}">
                 <i class="bi bi-file-earmark-text"></i> Reports
             </a>
-            <a href="#" class="nav-link">
+            <a href="{{ route('settings.index') }}" class="nav-link {{ request()->routeIs('settings.*') ? 'active' : '' }}">
                 <i class="bi bi-gear"></i> Settings
             </a>
         </nav>
