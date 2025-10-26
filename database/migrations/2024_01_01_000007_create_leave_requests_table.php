@@ -22,7 +22,7 @@ return new class extends Migration
             $table->text('rejection_reason')->nullable();
             $table->string('attachment')->nullable();
             $table->timestamps();
-            
+
             $table->index(['employee_id', 'status']);
             $table->index(['start_date', 'end_date']);
         });

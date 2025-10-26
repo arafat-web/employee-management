@@ -33,7 +33,7 @@ return new class extends Migration
             $table->date('payment_date')->nullable();
             $table->string('payment_method')->nullable();
             $table->timestamps();
-            
+
             $table->index(['employee_id', 'year', 'month']);
             $table->unique(['employee_id', 'year', 'month']);
         });

@@ -25,7 +25,7 @@ return new class extends Migration
             $table->date('acquired_date')->nullable();
             $table->text('notes')->nullable();
             $table->timestamps();
-            
+
             $table->unique(['employee_id', 'skill_id']);
         });
     }

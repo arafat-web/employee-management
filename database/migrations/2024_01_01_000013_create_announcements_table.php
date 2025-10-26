@@ -19,7 +19,7 @@ return new class extends Migration
             $table->boolean('is_pinned')->default(false);
             $table->boolean('active')->default(true);
             $table->timestamps();
-            
+
             $table->index(['start_date', 'end_date', 'active']);
         });
     }

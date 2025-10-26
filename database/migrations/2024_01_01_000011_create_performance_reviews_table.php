@@ -28,7 +28,7 @@ return new class extends Migration
             $table->enum('status', ['draft', 'submitted', 'acknowledged', 'completed'])->default('draft');
             $table->timestamp('acknowledged_at')->nullable();
             $table->timestamps();
-            
+
             $table->index(['employee_id', 'review_date']);
         });
     }

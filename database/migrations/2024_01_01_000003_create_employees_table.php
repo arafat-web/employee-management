@@ -26,7 +26,7 @@ return new class extends Migration
             $table->string('work_permit')->nullable();
             $table->string('visa_no')->nullable();
             $table->date('visa_expire')->nullable();
-            
+
             // Work Information
             $table->foreignId('department_id')->nullable()->constrained()->onDelete('set null');
             $table->foreignId('position_id')->nullable()->constrained()->onDelete('set null');
@@ -36,34 +36,34 @@ return new class extends Migration
             $table->string('work_email')->nullable();
             $table->string('work_phone')->nullable();
             $table->date('joining_date')->nullable();
-            
+
             // Address
             $table->text('address')->nullable();
             $table->string('city')->nullable();
             $table->string('state')->nullable();
             $table->string('zip_code')->nullable();
             $table->string('country')->nullable();
-            
+
             // Emergency Contact
             $table->string('emergency_contact_name')->nullable();
             $table->string('emergency_contact_phone')->nullable();
             $table->string('emergency_contact_relation')->nullable();
-            
+
             // Bank Details
             $table->string('bank_name')->nullable();
             $table->string('bank_account_number')->nullable();
             $table->string('bank_account_holder')->nullable();
             $table->string('bank_ifsc')->nullable();
-            
+
             // Additional Info
             $table->string('photo')->nullable();
             $table->text('notes')->nullable();
             $table->enum('status', ['active', 'inactive', 'on_leave', 'terminated'])->default('active');
             $table->boolean('is_company_admin')->default(false);
-            
+
             $table->timestamps();
             $table->softDeletes();
-            
+
             $table->index(['status', 'department_id']);
             $table->index(['manager_id', 'status']);
         });

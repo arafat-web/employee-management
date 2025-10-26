@@ -24,7 +24,7 @@ return new class extends Migration
             $table->string('document_path')->nullable();
             $table->timestamps();
             $table->softDeletes();
-            
+
             $table->index(['employee_id', 'status']);
         });
     }

@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('check_in_ip')->nullable();
             $table->string('check_out_ip')->nullable();
             $table->timestamps();
-            
+
             $table->unique(['employee_id', 'date']);
             $table->index(['date', 'status']);
         });

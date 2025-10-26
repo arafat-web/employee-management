@@ -17,7 +17,7 @@ return new class extends Migration
             $table->boolean('is_recurring')->default(false);
             $table->boolean('active')->default(true);
             $table->timestamps();
-            
+
             $table->index(['date', 'active']);
         });
     }

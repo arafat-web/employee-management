@@ -17,7 +17,7 @@ return new class extends Migration
             $table->decimal('used_days', 5, 2)->default(0);
             $table->decimal('remaining_days', 5, 2);
             $table->timestamps();
-            
+
             $table->unique(['employee_id', 'leave_type_id', 'year']);
         });
     }
