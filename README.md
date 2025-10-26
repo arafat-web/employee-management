@@ -1,61 +1,236 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Employee Management System (EMS)
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A comprehensive employee management system inspired by Odoo, built with Laravel 12 and Bootstrap 5.
 
-## About Laravel
+## 🎯 Key Features (Odoo-like)
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+### 1. **Employee Management**
+- Complete employee profiles with personal & work information
+- Employee hierarchy (Manager-Subordinate relationship)
+- Employee status tracking (Active, Inactive, On Leave, Terminated)
+- Employee code generation
+- Photo upload and document management
+- Emergency contact information
+- Bank account details
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+### 2. **Department Management**
+- Hierarchical department structure
+- Department-wise employee grouping
+- Department managers
+- Color-coded departments
+- Department statistics
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### 3. **Position/Job Management**
+- Position definitions
+- Department-wise positions
+- Required skills and qualifications
+- Expected employee count per position
 
-## Learning Laravel
+### 4. **Attendance Management**
+- Daily attendance tracking
+- Check-in/Check-out with IP logging
+- Attendance status (Present, Absent, Late, Half-Day, On Leave, Holiday)
+- Worked hours calculation
+- Overtime tracking
+- Monthly attendance reports
+- Attendance statistics
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+### 5. **Leave Management**
+- Multiple leave types (Annual, Sick, Casual, Maternity, Paternity, Unpaid)
+- Leave request workflow (Submit → Approve/Reject)
+- Leave balance tracking per employee
+- Leave calendar
+- Approval system with reasons
+- Leave reports
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+### 6. **Payroll Management**
+- Monthly payroll generation
+- Salary components (Basic, Allowances, Bonuses, Overtime)
+- Deductions (Tax, Insurance, Other)
+- Attendance-based salary calculation
+- Payroll status tracking
+- Bulk payroll generation
+- Payroll reports
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### 7. **Contract Management**
+- Multiple contract types (Permanent, Fixed-term, Internship, Freelance, Part-time)
+- Contract terms and benefits
+- Salary structure & working hours
+- Contract status tracking
 
-## Laravel Sponsors
+### 8. **Skills Management**
+- Skill categories (Technical, Soft, Language, Certification)
+- Employee skill mapping
+- Proficiency levels (1-5 scale)
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+### 9. **Performance Reviews**
+- Periodic performance evaluations
+- Multi-criteria ratings
+- Overall rating calculation
+- Goal setting
 
-### Premium Partners
+### 10. **Additional Features**
+- Dashboard with key metrics
+- Announcements system
+- Holiday management
+- Document management
+- Birthday reminders
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+## 🚀 Installation
 
-## Contributing
+### Prerequisites
+- PHP >= 8.2
+- Composer
+- MySQL/MariaDB
+- Node.js & NPM
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### Setup Steps
 
-## Code of Conduct
+1. **Install PHP dependencies**
+```bash
+composer install
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+2. **Install NPM dependencies**
+```bash
+npm install
+```
 
-## Security Vulnerabilities
+3. **Create environment file**
+```bash
+copy .env.example .env
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+4. **Generate application key**
+```bash
+php artisan key:generate
+```
 
-## License
+5. **Configure database in .env**
+```env
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=employee_management
+DB_USERNAME=root
+DB_PASSWORD=
+```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+6. **Run migrations**
+```bash
+php artisan migrate
+```
+
+7. **Seed the database**
+```bash
+php artisan db:seed
+```
+
+8. **Create storage link**
+```bash
+php artisan storage:link
+```
+
+9. **Build assets**
+```bash
+npm run build
+```
+
+10. **Start the development server**
+```bash
+php artisan serve
+```
+
+Visit: `http://localhost:8000`
+
+## 👤 Default Login Credentials
+
+**Admin Account:**
+- Email: `admin@example.com`
+- Password: `password`
+
+## 📊 Database Schema
+
+### Main Tables
+1. **employees** - Employee information
+2. **departments** - Department structure
+3. **positions** - Job positions
+4. **contracts** - Employment contracts
+5. **attendances** - Daily attendance records
+6. **leave_types** - Types of leaves
+7. **leave_requests** - Leave applications
+8. **leave_balances** - Employee leave balances
+9. **payrolls** - Salary records
+10. **skills** - Skill definitions
+11. **performance_reviews** - Performance evaluations
+12. **holidays** - Company holidays
+13. **announcements** - Company announcements
+14. **documents** - Employee documents
+
+## 🎨 Technologies Used
+
+- **Backend:** Laravel 12 (PHP 8.2)
+- **Frontend:** Bootstrap 5, Bootstrap Icons
+- **Database:** MySQL
+- **Charts:** Chart.js
+
+## 🎯 Odoo-Inspired Features
+
+✅ **Hierarchical Structure** - Departments and positions with parent-child relationships
+✅ **Status Tracking** - Active/Inactive status for all entities
+✅ **Color Coding** - Visual organization with color-coded items
+✅ **Workflow Management** - Approval flows for leaves and payroll
+✅ **Multi-level Relationships** - Manager, Coach, Department hierarchies
+✅ **Comprehensive Filtering** - Advanced search and filter options
+✅ **Bulk Operations** - Batch processing for payroll
+✅ **Dashboard Analytics** - Key metrics and trends
+✅ **Document Management** - File attachments and document tracking
+✅ **Audit Trail** - Timestamps and user tracking
+
+## 📝 Usage Examples
+
+### Creating an Employee
+1. Navigate to Employees → Add Employee
+2. Fill in personal information
+3. Select department and position
+4. Assign manager and save
+
+### Processing Payroll
+1. Navigate to Payroll → Create
+2. Select month and year
+3. Click "Generate Bulk" for all employees
+4. Review and edit individual payrolls
+5. Process payrolls and mark as paid
+
+### Managing Attendance
+1. Navigate to Attendance
+2. Employees can check-in/out themselves
+3. Or HR can mark attendance manually
+4. View daily/monthly reports
+
+## 🔐 Security Features
+
+- Password hashing with bcrypt
+- CSRF protection
+- SQL injection prevention (Eloquent ORM)
+- File upload validation
+- User authentication
+
+## 🚧 Future Enhancements
+
+- [ ] Multi-tenant support
+- [ ] Advanced reporting with exports (PDF, Excel)
+- [ ] Email notifications
+- [ ] Biometric integration
+- [ ] Mobile app
+- [ ] Project management integration
+- [ ] Training management
+- [ ] Recruitment module
+
+## 📄 License
+
+This project is open-sourced software licensed under the MIT license.
+
+---
+
+**Built with ❤️ using Laravel & Bootstrap**
