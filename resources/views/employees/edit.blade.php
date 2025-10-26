@@ -22,15 +22,15 @@
                     @csrf
                     @method('PUT')
 
-                    <div class="accordion" id="employeeAccordion">
+                    <div class="accordion accordion-flush" id="employeeAccordion">
                         <!-- Personal Information -->
                         <div class="accordion-item">
-                            <h2 class="accordion-header">
-                                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#personalInfo">
+                            <h2 class="accordion-header" id="headingPersonal">
+                                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#personalInfo" aria-expanded="true" aria-controls="personalInfo">
                                     <i class="bi bi-person me-2"></i> Personal Information
                                 </button>
                             </h2>
-                            <div id="personalInfo" class="accordion-collapse collapse show" data-bs-parent="#employeeAccordion">
+                            <div id="personalInfo" class="accordion-collapse collapse show" aria-labelledby="headingPersonal" data-bs-parent="#employeeAccordion">
                                 <div class="accordion-body">
                                     <div class="row">
                                         <div class="col-md-4 mb-3">
@@ -140,12 +140,12 @@
 
                         <!-- Work Information -->
                         <div class="accordion-item">
-                            <h2 class="accordion-header">
-                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#workInfo">
+                            <h2 class="accordion-header" id="headingWork">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#workInfo" aria-expanded="false" aria-controls="workInfo">
                                     <i class="bi bi-briefcase me-2"></i> Work Information
                                 </button>
                             </h2>
-                            <div id="workInfo" class="accordion-collapse collapse" data-bs-parent="#employeeAccordion">
+                            <div id="workInfo" class="accordion-collapse collapse" aria-labelledby="headingWork" data-bs-parent="#employeeAccordion">
                                 <div class="accordion-body">
                                     <div class="row">
                                         <div class="col-md-4 mb-3">
@@ -241,12 +241,12 @@
 
                         <!-- Address Information -->
                         <div class="accordion-item">
-                            <h2 class="accordion-header">
-                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#addressInfo">
+                            <h2 class="accordion-header" id="headingAddress">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#addressInfo" aria-expanded="false" aria-controls="addressInfo">
                                     <i class="bi bi-geo-alt me-2"></i> Address Information
                                 </button>
                             </h2>
-                            <div id="addressInfo" class="accordion-collapse collapse" data-bs-parent="#employeeAccordion">
+                            <div id="addressInfo" class="accordion-collapse collapse" aria-labelledby="headingAddress" data-bs-parent="#employeeAccordion">
                                 <div class="accordion-body">
                                     <div class="row">
                                         <div class="col-md-12 mb-3">
