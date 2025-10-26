@@ -18,7 +18,7 @@ class DashboardController extends Controller
         $totalDepartments = Department::where('active', true)->count();
 
         // Today's attendance
-        $todayAttendance = Attendance::whereDate('date', today())
+        $todayAttendance = Attendance::where('date', today())
             ->where('status', 'present')
             ->count();
 

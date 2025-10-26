@@ -12,7 +12,7 @@ class PayrollController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Payroll::with('employee');
+        $query = Payroll::with('employee.department');
 
         if ($request->filled('month')) {
             $query->where('month', $request->month);
@@ -33,7 +33,23 @@ class PayrollController extends Controller
         $payrolls = $query->latest()->paginate(15);
         $employees = Employee::where('status', 'active')->get();
 
-        return view('payroll.index', compact('payrolls', 'employees'));
+        // Statistics
+        $currentMonth = $request->filled('month') ? $request->month : now()->month;
+        $currentYear = $request->filled('year') ? $request->year : now()->year;
+
+        $stats = [
+            'total_gross' => Payroll::where('month', $currentMonth)
+                ->where('year', $currentYear)
+                ->sum('gross_salary'),
+            'total_net' => Payroll::where('month', $currentMonth)
+                ->where('year', $currentYear)
+                ->sum('net_salary'),
+            'total_employees' => Payroll::where('month', $currentMonth)
+                ->where('year', $currentYear)
+                ->count(),
+        ];
+
+        return view('payroll.index', compact('payrolls', 'employees', 'stats'));
     }
 
     public function create()
@@ -50,12 +66,17 @@ class PayrollController extends Controller
             'month' => 'required|integer|between:1,12',
             'year' => 'required|integer',
             'basic_salary' => 'required|numeric|min:0',
-            'allowances' => 'nullable|numeric|min:0',
-            'bonuses' => 'nullable|numeric|min:0',
-            'overtime_pay' => 'nullable|numeric|min:0',
-            'tax_deduction' => 'nullable|numeric|min:0',
-            'insurance_deduction' => 'nullable|numeric|min:0',
-            'other_deductions' => 'nullable|numeric|min:0',
+            'working_days' => 'nullable|integer',
+            'hra' => 'nullable|numeric|min:0',
+            'da' => 'nullable|numeric|min:0',
+            'medical_allowance' => 'nullable|numeric|min:0',
+            'transport_allowance' => 'nullable|numeric|min:0',
+            'other_allowance' => 'nullable|numeric|min:0',
+            'pf' => 'nullable|numeric|min:0',
+            'esi' => 'nullable|numeric|min:0',
+            'tds' => 'nullable|numeric|min:0',
+            'loan' => 'nullable|numeric|min:0',
+            'other_deduction' => 'nullable|numeric|min:0',
             'notes' => 'nullable|string',
         ]);
 
@@ -69,148 +90,118 @@ class PayrollController extends Controller
             return back()->withErrors(['month' => 'Payroll already exists for this month.']);
         }
 
-        // Calculate attendance
-        $startDate = Carbon::create($validated['year'], $validated['month'], 1)->startOfMonth();
-        $endDate = $startDate->copy()->endOfMonth();
-        $workingDays = $startDate->diffInDaysFiltered(function (Carbon $date) {
-            return $date->isWeekday();
-        }, $endDate);
+        // Calculate totals
+        $allowances = ($validated['hra'] ?? 0) + ($validated['da'] ?? 0) +
+                     ($validated['medical_allowance'] ?? 0) + ($validated['transport_allowance'] ?? 0) +
+                     ($validated['other_allowance'] ?? 0);
 
-        $attendances = Attendance::where('employee_id', $validated['employee_id'])
-            ->whereBetween('date', [$startDate, $endDate])
-            ->get();
+        $deductions = ($validated['pf'] ?? 0) + ($validated['esi'] ?? 0) +
+                     ($validated['tds'] ?? 0) + ($validated['loan'] ?? 0) +
+                     ($validated['other_deduction'] ?? 0);
 
-        $presentDays = $attendances->where('status', 'present')->count();
-        $absentDays = $attendances->where('status', 'absent')->count();
-        $leaveDays = $attendances->where('status', 'on_leave')->count();
+        $grossSalary = $validated['basic_salary'] + $allowances;
+        $netSalary = $grossSalary - $deductions;
 
-        // Generate payroll number
-        $payrollNumber = 'PAY' . $validated['year'] . str_pad($validated['month'], 2, '0', STR_PAD_LEFT) .
-                        str_pad($validated['employee_id'], 5, '0', STR_PAD_LEFT);
+        $validated['allowances'] = $allowances;
+        $validated['deductions'] = $deductions;
+        $validated['gross_salary'] = $grossSalary;
+        $validated['net_salary'] = $netSalary;
+        $validated['status'] = 'pending';
 
-        $validated['payroll_number'] = $payrollNumber;
-        $validated['working_days'] = $workingDays;
-        $validated['present_days'] = $presentDays;
-        $validated['absent_days'] = $absentDays;
-        $validated['leave_days'] = $leaveDays;
-        $validated['allowances'] = $validated['allowances'] ?? 0;
-        $validated['bonuses'] = $validated['bonuses'] ?? 0;
-        $validated['overtime_pay'] = $validated['overtime_pay'] ?? 0;
-        $validated['tax_deduction'] = $validated['tax_deduction'] ?? 0;
-        $validated['insurance_deduction'] = $validated['insurance_deduction'] ?? 0;
-        $validated['other_deductions'] = $validated['other_deductions'] ?? 0;
-        $validated['status'] = 'draft';
+        Payroll::create($validated);
 
-        $payroll = Payroll::create($validated);
-        $payroll->calculateNetSalary();
-
-        return redirect()->route('payroll.show', $payroll)
-            ->with('success', 'Payroll created successfully!');
+        return redirect()->route('payroll.index')
+            ->with('success', 'Payroll generated successfully!');
     }
 
     public function show(Payroll $payroll)
     {
-        $payroll->load('employee.department');
+        $payroll->load('employee.department', 'employee.position');
 
         return view('payroll.show', compact('payroll'));
     }
 
-    public function process(Payroll $payroll)
+    public function bulk()
     {
-        if ($payroll->status !== 'draft') {
-            return back()->with('error', 'Only draft payrolls can be processed.');
-        }
+        $employees = Employee::where('status', 'active')
+            ->with('department', 'position')
+            ->get();
+        $departments = \App\Models\Department::where('active', true)->get();
 
-        $payroll->update(['status' => 'processed']);
-
-        return back()->with('success', 'Payroll processed successfully!');
+        return view('payroll.bulk', compact('employees', 'departments'));
     }
 
-    public function markAsPaid(Request $request, Payroll $payroll)
-    {
-        if ($payroll->status !== 'processed') {
-            return back()->with('error', 'Only processed payrolls can be marked as paid.');
-        }
-
-        $validated = $request->validate([
-            'payment_date' => 'required|date',
-            'payment_method' => 'required|string',
-        ]);
-
-        $payroll->update([
-            'status' => 'paid',
-            'payment_date' => $validated['payment_date'],
-            'payment_method' => $validated['payment_method'],
-        ]);
-
-        return back()->with('success', 'Payroll marked as paid!');
-    }
-
-    public function generateBulk(Request $request)
+    public function bulkStore(Request $request)
     {
         $validated = $request->validate([
+            'employee_ids' => 'required|array',
+            'employee_ids.*' => 'exists:employees,id',
             'month' => 'required|integer|between:1,12',
             'year' => 'required|integer',
         ]);
 
-        $employees = Employee::where('status', 'active')->with('activeContract')->get();
         $generated = 0;
+        $skipped = 0;
 
-        foreach ($employees as $employee) {
-            if (!$employee->activeContract) {
-                continue;
-            }
-
-            $exists = Payroll::where('employee_id', $employee->id)
+        foreach ($validated['employee_ids'] as $employeeId) {
+            // Check if already exists
+            $exists = Payroll::where('employee_id', $employeeId)
                 ->where('month', $validated['month'])
                 ->where('year', $validated['year'])
                 ->exists();
 
             if ($exists) {
+                $skipped++;
                 continue;
             }
 
-            // Calculate attendance
-            $startDate = Carbon::create($validated['year'], $validated['month'], 1)->startOfMonth();
-            $endDate = $startDate->copy()->endOfMonth();
-            $workingDays = $startDate->diffInDaysFiltered(function (Carbon $date) {
-                return $date->isWeekday();
-            }, $endDate);
+            $employee = Employee::find($employeeId);
 
-            $attendances = Attendance::where('employee_id', $employee->id)
-                ->whereBetween('date', [$startDate, $endDate])
-                ->get();
+            // Calculate totals (using default values)
+            $basicSalary = $employee->basic_salary ?? 0;
+            $allowances = $basicSalary * 0.2; // 20% of basic as allowances
+            $deductions = $basicSalary * 0.12; // 12% for PF, ESI, etc.
+            $grossSalary = $basicSalary + $allowances;
+            $netSalary = $grossSalary - $deductions;
 
-            $presentDays = $attendances->where('status', 'present')->count();
-            $absentDays = $attendances->where('status', 'absent')->count();
-            $leaveDays = $attendances->where('status', 'on_leave')->count();
-
-            $payrollNumber = 'PAY' . $validated['year'] . str_pad($validated['month'], 2, '0', STR_PAD_LEFT) .
-                            str_pad($employee->id, 5, '0', STR_PAD_LEFT);
-
-            $payroll = Payroll::create([
-                'employee_id' => $employee->id,
-                'payroll_number' => $payrollNumber,
+            Payroll::create([
+                'employee_id' => $employeeId,
                 'month' => $validated['month'],
                 'year' => $validated['year'],
-                'basic_salary' => $employee->activeContract->salary,
-                'allowances' => 0,
-                'bonuses' => 0,
-                'overtime_pay' => 0,
-                'tax_deduction' => 0,
-                'insurance_deduction' => 0,
-                'other_deductions' => 0,
-                'working_days' => $workingDays,
-                'present_days' => $presentDays,
-                'absent_days' => $absentDays,
-                'leave_days' => $leaveDays,
-                'status' => 'draft',
+                'basic_salary' => $basicSalary,
+                'allowances' => $allowances,
+                'deductions' => $deductions,
+                'gross_salary' => $grossSalary,
+                'net_salary' => $netSalary,
+                'working_days' => 26,
+                'status' => 'pending',
             ]);
 
-            $payroll->calculateNetSalary();
             $generated++;
         }
 
-        return back()->with('success', "Generated {$generated} payroll records!");
+        $message = "Generated {$generated} payroll records.";
+        if ($skipped > 0) {
+            $message .= " Skipped {$skipped} existing records.";
+        }
+
+        return redirect()->route('payroll.index')->with('success', $message);
+    }
+
+    public function markPaid(Payroll $payroll)
+    {
+        $payroll->update([
+            'status' => 'paid',
+            'payment_date' => now(),
+        ]);
+
+        return back()->with('success', 'Payroll marked as paid!');
+    }
+
+    public function destroy(Payroll $payroll)
+    {
+        $payroll->delete();
+
+        return redirect()->route('payroll.index')->with('success', 'Payroll record deleted successfully!');
     }
 }
