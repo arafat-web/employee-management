@@ -14,7 +14,7 @@
                         {{ strtoupper(substr($user->name, 0, 1)) }}
                     </div>
                 @endif
-                
+
                 <h4>{{ $user->name }}</h4>
                 @if($user->role)
                     <span class="badge bg-primary mb-3">{{ $user->role->display_name }}</span>
@@ -35,7 +35,7 @@
         <div class="col-md-8">
             <div class="table-card">
                 <h5 class="mb-4">Profile Information</h5>
-                
+
                 <div class="row mb-3">
                     <div class="col-md-4">
                         <strong>Full Name:</strong>
