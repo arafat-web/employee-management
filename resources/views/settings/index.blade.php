@@ -57,6 +57,21 @@
                 </div>
             </a>
         </div>
+
+        <!-- Roles & Permissions -->
+        @if(auth()->user()->canManageRoles())
+        <div class="col-md-6 col-lg-4 mb-4">
+            <a href="{{ route('roles.index') }}" class="text-decoration-none">
+                <div class="table-card text-center hover-shadow" style="cursor: pointer;">
+                    <div class="stat-icon mx-auto mb-3" style="width: 80px; height: 80px; background: rgba(255, 193, 7, 0.1); color: #ffc107;">
+                        <i class="bi bi-shield-lock" style="font-size: 40px;"></i>
+                    </div>
+                    <h5>Roles & Permissions</h5>
+                    <p class="text-muted mb-0">Manage user roles and access control</p>
+                </div>
+            </a>
+        </div>
+        @endif
     </div>
 </div>
 
