@@ -48,11 +48,12 @@ class SettingsController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'code' => 'required|string|max:10|unique:leave_types,code',
-            'days_per_year' => 'required|integer|min:0',
-            'max_consecutive_days' => 'nullable|integer|min:1',
+            'days_allowed' => 'required|integer|min:0',
+            'requires_approval' => 'nullable|boolean',
             'is_paid' => 'required|boolean',
+            'color' => 'nullable|string|max:7',
             'description' => 'nullable|string',
+            'active' => 'nullable|boolean',
         ]);
 
         LeaveType::create($validated);
@@ -64,11 +65,12 @@ class SettingsController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'code' => 'required|string|max:10|unique:leave_types,code,' . $leaveType->id,
-            'days_per_year' => 'required|integer|min:0',
-            'max_consecutive_days' => 'nullable|integer|min:1',
+            'days_allowed' => 'required|integer|min:0',
+            'requires_approval' => 'nullable|boolean',
             'is_paid' => 'required|boolean',
+            'color' => 'nullable|string|max:7',
             'description' => 'nullable|string',
+            'active' => 'nullable|boolean',
         ]);
 
         $leaveType->update($validated);
@@ -85,17 +87,18 @@ class SettingsController extends Controller
     // Positions Management
     public function positions()
     {
-        $positions = Position::orderBy('title')->get();
+        $positions = Position::orderBy('name')->get();
         return view('settings.positions', compact('positions'));
     }
 
     public function storePosition(Request $request)
     {
         $validated = $request->validate([
-            'title' => 'required|string|max:255',
+            'name' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'min_salary' => 'nullable|numeric|min:0',
-            'max_salary' => 'nullable|numeric|min:0',
+            'requirements' => 'nullable|string',
+            'expected_employees' => 'nullable|integer|min:1',
+            'active' => 'nullable|boolean',
         ]);
 
         Position::create($validated);
@@ -106,10 +109,11 @@ class SettingsController extends Controller
     public function updatePosition(Request $request, Position $position)
     {
         $validated = $request->validate([
-            'title' => 'required|string|max:255',
+            'name' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'min_salary' => 'nullable|numeric|min:0',
-            'max_salary' => 'nullable|numeric|min:0',
+            'requirements' => 'nullable|string',
+            'expected_employees' => 'nullable|integer|min:1',
+            'active' => 'nullable|boolean',
         ]);
 
         $position->update($validated);
