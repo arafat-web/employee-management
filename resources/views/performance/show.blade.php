@@ -24,7 +24,7 @@
                         @endif
                         <div>
                             <h4 class="mb-1">{{ $performance->employee->full_name }}</h4>
-                            <p class="mb-1 text-muted">{{ $performance->employee->employee_code }} | {{ $performance->employee->position->title ?? 'N/A' }}</p>
+                            <p class="mb-1 text-muted">{{ $performance->employee->employee_code }} | {{ $performance->employee->position->name ?? 'N/A' }}</p>
                             <p class="mb-0 text-muted"><i class="bi bi-diagram-3"></i> {{ $performance->employee->department->name ?? 'N/A' }}</p>
                         </div>
                     </div>
