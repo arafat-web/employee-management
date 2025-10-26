@@ -75,7 +75,8 @@ class Payroll extends Model
     {
         $this->calculateGrossSalary();
         $this->calculateTotalDeductions();
-        $this->net_salary = $this->gross_salary - $this->total_deductions;
+        $net = $this->gross_salary - $this->total_deductions;
+        $this->net_salary = $net;
         return $this->net_salary;
     }
 

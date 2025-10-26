@@ -59,7 +59,8 @@ class LeaveRequest extends Model
     {
         $start = \Carbon\Carbon::parse($this->start_date);
         $end = \Carbon\Carbon::parse($this->end_date);
-        $this->number_of_days = $start->diffInDays($end) + 1;
+        $days = $start->diffInDays($end) + 1;
+        $this->number_of_days = $days;
         return $this->number_of_days;
     }
 }

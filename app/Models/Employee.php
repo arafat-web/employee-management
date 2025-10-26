@@ -158,4 +158,12 @@ class Employee extends Model
     {
         return $query->where('department_id', $departmentId);
     }
+
+    public function hasPayrollFor($month, $year)
+    {
+        return $this->payrolls()
+            ->where('month', $month)
+            ->where('year', $year)
+            ->exists();
+    }
 }

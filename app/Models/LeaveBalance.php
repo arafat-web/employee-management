@@ -37,7 +37,8 @@ class LeaveBalance extends Model
 
     public function updateBalance()
     {
-        $this->remaining_days = $this->total_days - $this->used_days;
+        $remaining = $this->total_days - $this->used_days;
+        $this->remaining_days = $remaining;
         $this->save();
     }
 }
