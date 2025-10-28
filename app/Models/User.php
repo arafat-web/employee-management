@@ -58,6 +58,14 @@ class User extends Authenticatable
     }
 
     /**
+     * Get the employee record for this user
+     */
+    public function employee()
+    {
+        return $this->hasOne(Employee::class);
+    }
+
+    /**
      * Check if user has a specific role
      */
     public function hasRole($role)

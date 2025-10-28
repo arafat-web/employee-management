@@ -136,7 +136,7 @@ class Employee extends Model
 
     public function documents()
     {
-        return $this->hasMany(Document::class);
+        return $this->hasMany(EmployeeDocument::class);
     }
 
     public function getFullNameAttribute()
