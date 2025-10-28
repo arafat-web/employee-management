@@ -216,4 +216,41 @@ class LeaveController extends Controller
             ];
         }));
     }
+
+    public function calendar()
+    {
+        return view('leaves.calendar');
+    }
+
+    public function calendarData(Request $request)
+    {
+        $leaves = LeaveRequest::with(['employee', 'leaveType'])
+            ->get();
+
+        $events = $leaves->map(function ($leave) {
+            $color = match($leave->status) {
+                'approved' => '#28a745',
+                'pending' => '#ffc107',
+                'rejected' => '#dc3545',
+                default => '#6c757d',
+            };
+
+            return [
+                'id' => $leave->id,
+                'title' => $leave->employee->first_name . ' ' . $leave->employee->last_name . ' - ' . $leave->leaveType->name,
+                'start' => $leave->start_date,
+                'end' => date('Y-m-d', strtotime($leave->end_date . ' +1 day')),
+                'backgroundColor' => $color,
+                'borderColor' => $color,
+                'extendedProps' => [
+                    'status' => ucfirst($leave->status),
+                    'employee' => $leave->employee->first_name . ' ' . $leave->employee->last_name,
+                    'leave_type' => $leave->leaveType->name,
+                    'days' => $leave->days,
+                ],
+            ];
+        });
+
+        return response()->json($events);
+    }
 }

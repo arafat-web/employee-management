@@ -11,7 +11,9 @@ use App\Http\Controllers\PerformanceReviewController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\EmployeeDocumentController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 
@@ -33,6 +35,15 @@ Route::middleware([\App\Http\Middleware\Authenticate::class])->group(function ()
 Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
 // Employees
+Route::get('/employees/import', [EmployeeController::class, 'importView'])->name('employees.import.view');
+Route::post('/employees/import', [EmployeeController::class, 'import'])->name('employees.import');
+Route::get('/employees/template', [EmployeeController::class, 'downloadTemplate'])->name('employees.template');
+Route::get('/employees/export', [EmployeeController::class, 'export'])->name('employees.export');
+Route::get('/employees/{employee}/documents', [EmployeeDocumentController::class, 'index'])->name('employees.documents.index');
+Route::get('/employees/{employee}/documents/create', [EmployeeDocumentController::class, 'create'])->name('employees.documents.create');
+Route::post('/employees/{employee}/documents', [EmployeeDocumentController::class, 'store'])->name('employees.documents.store');
+Route::get('/employees/{employee}/documents/{document}/download', [EmployeeDocumentController::class, 'download'])->name('employees.documents.download');
+Route::delete('/employees/{employee}/documents/{document}', [EmployeeDocumentController::class, 'destroy'])->name('employees.documents.destroy');
 Route::resource('employees', EmployeeController::class);
 
 // Departments
@@ -42,6 +53,8 @@ Route::resource('departments', DepartmentController::class);
 Route::get('/attendance', [AttendanceController::class, 'index'])->name('attendance.index');
 Route::get('/attendance/create', [AttendanceController::class, 'create'])->name('attendance.create');
 Route::post('/attendance', [AttendanceController::class, 'store'])->name('attendance.store');
+Route::post('/attendance/employee/check-in', [AttendanceController::class, 'checkIn'])->name('attendance.employee.checkIn');
+Route::post('/attendance/employee/check-out', [AttendanceController::class, 'checkOut'])->name('attendance.employee.checkOut');
 Route::post('/attendance/check-in', [AttendanceController::class, 'checkIn'])->name('attendance.checkIn');
 Route::post('/attendance/check-out', [AttendanceController::class, 'checkOut'])->name('attendance.checkOut');
 Route::post('/attendance/{attendance}/checkout', [AttendanceController::class, 'checkout'])->name('attendance.checkout');
@@ -50,6 +63,8 @@ Route::get('/attendance/report', [AttendanceController::class, 'report'])->name(
 
 // Leaves
 Route::get('/leaves', [LeaveController::class, 'index'])->name('leaves.index');
+Route::get('/leaves/calendar', [LeaveController::class, 'calendar'])->name('leaves.calendar');
+Route::get('/leaves/calendar/data', [LeaveController::class, 'calendarData'])->name('leaves.calendar.data');
 Route::get('/leaves/balances', [LeaveController::class, 'balances'])->name('leaves.balances');
 Route::get('/leaves/balance/{employee}', [LeaveController::class, 'getBalance'])->name('leaves.getBalance');
 Route::get('/leaves/create', [LeaveController::class, 'create'])->name('leaves.create');
@@ -78,11 +93,17 @@ Route::get('/reports/attendance', [ReportController::class, 'attendance'])->name
 Route::get('/reports/leave', [ReportController::class, 'leave'])->name('reports.leave');
 Route::get('/reports/payroll', [ReportController::class, 'payroll'])->name('reports.payroll');
 Route::get('/reports/employee', [ReportController::class, 'employee'])->name('reports.employee');
+Route::get('/reports/attendance/pdf', [ReportController::class, 'exportAttendancePdf'])->name('reports.attendance.pdf');
+Route::get('/reports/leave/pdf', [ReportController::class, 'exportLeavePdf'])->name('reports.leave.pdf');
+Route::get('/reports/payroll/pdf', [ReportController::class, 'exportPayrollPdf'])->name('reports.payroll.pdf');
+Route::get('/reports/employee/pdf', [ReportController::class, 'exportEmployeePdf'])->name('reports.employee.pdf');
 
 // Settings
 Route::get('/settings', [SettingsController::class, 'index'])->name('settings.index');
 Route::get('/settings/company', [SettingsController::class, 'company'])->name('settings.company');
 Route::post('/settings/company', [SettingsController::class, 'updateCompany'])->name('settings.updateCompany');
+Route::get('/settings/attendance', [SettingsController::class, 'attendance'])->name('settings.attendance');
+Route::post('/settings/attendance', [SettingsController::class, 'updateAttendance'])->name('settings.updateAttendance');
 Route::get('/settings/leave-types', [SettingsController::class, 'leaveTypes'])->name('settings.leave-types');
 Route::post('/settings/leave-types', [SettingsController::class, 'storeLeaveType'])->name('settings.storeLeaveType');
 Route::put('/settings/leave-types/{leaveType}', [SettingsController::class, 'updateLeaveType'])->name('settings.updateLeaveType');
@@ -99,6 +120,12 @@ Route::delete('/settings/holidays/{holiday}', [SettingsController::class, 'delet
 // Roles & Permissions (Admin only or users with can_manage_roles permission)
 Route::middleware(['auth'])->group(function () {
     Route::resource('roles', RoleController::class);
+});
+
+// User Management (Admin only or users with can_manage_roles permission)
+Route::middleware(['auth'])->group(function () {
+    Route::resource('users', UserController::class);
+    Route::put('/users/{user}/password', [UserController::class, 'updatePassword'])->name('users.updatePassword');
 });
 
 // Profile Management

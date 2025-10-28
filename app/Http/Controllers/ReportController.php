@@ -9,6 +9,7 @@ use App\Models\Payroll;
 use App\Models\Department;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class ReportController extends Controller
 {
@@ -154,5 +155,93 @@ class ReportController extends Controller
         $departments = Department::where('active', true)->get();
 
         return view('reports.employee', compact('employees', 'summary', 'byDepartment', 'departments'));
+    }
+
+    public function exportAttendancePdf(Request $request)
+    {
+        $startDate = $request->input('start_date', now()->startOfMonth()->format('Y-m-d'));
+        $endDate = $request->input('end_date', now()->endOfMonth()->format('Y-m-d'));
+        $departmentId = $request->input('department');
+
+        $query = Attendance::with(['employee.department'])
+            ->whereBetween('date', [$startDate, $endDate]);
+
+        if ($departmentId) {
+            $query->whereHas('employee', function($q) use ($departmentId) {
+                $q->where('department_id', $departmentId);
+            });
+        }
+
+        $attendances = $query->orderBy('date', 'desc')->get();
+        $departments = Department::where('active', true)->get();
+
+        $pdf = Pdf::loadView('exports.attendance-pdf', compact('attendances', 'departments'));
+        return $pdf->download('attendance-report-' . now()->format('Y-m-d') . '.pdf');
+    }
+
+    public function exportLeavePdf(Request $request)
+    {
+        $year = $request->input('year', date('Y'));
+        $departmentId = $request->input('department');
+
+        $query = LeaveRequest::with(['employee.department', 'leaveType'])
+            ->whereYear('start_date', $year);
+
+        if ($departmentId) {
+            $query->whereHas('employee', function($q) use ($departmentId) {
+                $q->where('department_id', $departmentId);
+            });
+        }
+
+        $leaves = $query->orderBy('start_date', 'desc')->get();
+        $departments = Department::where('active', true)->get();
+
+        $pdf = Pdf::loadView('exports.leave-pdf', compact('leaves', 'departments'));
+        return $pdf->download('leave-report-' . now()->format('Y-m-d') . '.pdf');
+    }
+
+    public function exportPayrollPdf(Request $request)
+    {
+        $month = $request->input('month', date('m'));
+        $year = $request->input('year', date('Y'));
+        $departmentId = $request->input('department');
+
+        $query = Payroll::with(['employee.department'])
+            ->where('month', $month)
+            ->where('year', $year);
+
+        if ($departmentId) {
+            $query->whereHas('employee', function($q) use ($departmentId) {
+                $q->where('department_id', $departmentId);
+            });
+        }
+
+        $payrolls = $query->orderBy('employee_id')->get();
+        $departments = Department::where('active', true)->get();
+
+        $pdf = Pdf::loadView('exports.payroll-pdf', compact('payrolls', 'departments'));
+        return $pdf->download('payroll-report-' . now()->format('Y-m-d') . '.pdf');
+    }
+
+    public function exportEmployeePdf(Request $request)
+    {
+        $departmentId = $request->input('department');
+        $status = $request->input('status', 'active');
+
+        $query = Employee::with(['department', 'position']);
+
+        if ($departmentId) {
+            $query->where('department_id', $departmentId);
+        }
+
+        if ($status) {
+            $query->where('status', $status);
+        }
+
+        $employees = $query->orderBy('first_name')->get();
+        $departments = Department::where('active', true)->get();
+
+        $pdf = Pdf::loadView('exports.employee-pdf', compact('employees', 'departments'));
+        return $pdf->download('employee-report-' . now()->format('Y-m-d') . '.pdf');
     }
 }

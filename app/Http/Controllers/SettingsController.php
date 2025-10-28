@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\LeaveType;
 use App\Models\Position;
 use App\Models\Holiday;
+use App\Models\AttendanceSetting;
 use Illuminate\Http\Request;
 
 class SettingsController extends Controller
@@ -166,5 +167,35 @@ class SettingsController extends Controller
     {
         $holiday->delete();
         return back()->with('success', 'Holiday deleted successfully.');
+    }
+
+    // Attendance Settings
+    public function attendance()
+    {
+        $settings = AttendanceSetting::getSettings();
+        return view('settings.attendance', compact('settings'));
+    }
+
+    public function updateAttendance(Request $request)
+    {
+        $validated = $request->validate([
+            'check_in_start' => 'required|date_format:H:i',
+            'check_in_end' => 'required|date_format:H:i|after:check_in_start',
+            'check_out_start' => 'required|date_format:H:i',
+            'check_out_end' => 'required|date_format:H:i|after:check_out_start',
+            'work_start_time' => 'required|date_format:H:i',
+            'work_end_time' => 'required|date_format:H:i|after:work_start_time',
+            'late_threshold_minutes' => 'required|integer|min:0|max:120',
+            'early_leave_threshold_minutes' => 'required|integer|min:0|max:120',
+            'half_day_hours' => 'required|integer|min:1|max:12',
+            'full_day_hours' => 'required|integer|min:1|max:24',
+            'allow_weekend_checkin' => 'boolean',
+            'require_checkout' => 'boolean',
+        ]);
+
+        $settings = AttendanceSetting::first();
+        $settings->update($validated);
+
+        return back()->with('success', 'Attendance settings updated successfully.');
     }
 }
