@@ -2,79 +2,116 @@
 
 A comprehensive employee management system inspired by Odoo, built with Laravel 12 and Bootstrap 5.
 
-## 🎯 Key Features (Odoo-like)
+## 🎯 Key Features
 
-### 1. **Employee Management**
+### 👥 Employee Management
 - Complete employee profiles with personal & work information
 - Employee hierarchy (Manager-Subordinate relationship)
 - Employee status tracking (Active, Inactive, On Leave, Terminated)
-- Employee code generation
-- Photo upload and document management
+- Photo upload and profile management
 - Emergency contact information
 - Bank account details
+- **Excel/CSV Import/Export** - Bulk employee data management
+- **Group By** - View employees grouped by Department, Position, or Status
+- **Document Management** - Upload and manage employee documents (ID, Contract, Certificate, Other)
 
-### 2. **Department Management**
+### 🏢 Department & Position Management
 - Hierarchical department structure
 - Department-wise employee grouping
-- Department managers
-- Color-coded departments
-- Department statistics
+- Position definitions with required skills
+- Color-coded organization
 
-### 3. **Position/Job Management**
-- Position definitions
-- Department-wise positions
-- Required skills and qualifications
-- Expected employee count per position
-
-### 4. **Attendance Management**
-- Daily attendance tracking
-- Check-in/Check-out with IP logging
-- Attendance status (Present, Absent, Late, Half-Day, On Leave, Holiday)
-- Worked hours calculation
-- Overtime tracking
+### ⏰ Attendance Management
+- **Employee Self-Service Check-in/Check-out** with time validation
+- **Admin-Configurable Time Windows:**
+  - Set earliest/latest check-in times (default: 6:00 AM - 12:00 PM)
+  - Set earliest/latest check-out times (default: 3:00 PM - 11:59 PM)
+  - Configure official work hours (default: 9:00 AM - 5:00 PM)
+  - Set late arrival threshold (default: 15 minutes)
+  - Set early leave threshold (default: 15 minutes)
+  - Define half-day and full-day hours
+  - Weekend check-in toggle
+  - Required check-out option
+- **Auto Status Detection:**
+  - Marks "Late" if check-in exceeds threshold
+  - Determines "Half Day" or "Present" based on worked hours
+  - Detects early leave
+- IP address logging for security
 - Monthly attendance reports
-- Attendance statistics
+- Dashboard quick check-in/check-out
 
-### 5. **Leave Management**
+### 🏖️ Leave Management
 - Multiple leave types (Annual, Sick, Casual, Maternity, Paternity, Unpaid)
 - Leave request workflow (Submit → Approve/Reject)
 - Leave balance tracking per employee
-- Leave calendar
+- **Leave Calendar View** - Visual calendar with color-coded leave types using FullCalendar
 - Approval system with reasons
 - Leave reports
 
-### 6. **Payroll Management**
+### 💰 Payroll Management
 - Monthly payroll generation
 - Salary components (Basic, Allowances, Bonuses, Overtime)
 - Deductions (Tax, Insurance, Other)
 - Attendance-based salary calculation
-- Payroll status tracking
 - Bulk payroll generation
-- Payroll reports
+- **Export Options** - Download payroll reports
 
-### 7. **Contract Management**
-- Multiple contract types (Permanent, Fixed-term, Internship, Freelance, Part-time)
-- Contract terms and benefits
-- Salary structure & working hours
-- Contract status tracking
+### 📊 Reports & Analytics
+- **PDF Export** - Generate PDF reports for:
+  - Attendance reports
+  - Leave reports
+  - Payroll reports
+  - Employee directory
+- **Excel/CSV Export** - Export data for:
+  - Employees
+  - Attendance records
+  - Leave requests
+  - Payroll data
+- Dashboard with key metrics and statistics
 
-### 8. **Skills Management**
-- Skill categories (Technical, Soft, Language, Certification)
-- Employee skill mapping
-- Proficiency levels (1-5 scale)
+### 🔐 Roles & Permissions System
+- **5 Default Roles:**
+  - **Administrator** - Full system access
+  - **HR Manager** - Employee, attendance, leave, performance management
+  - **Accountant** - Payroll and financial reports
+  - **Department Manager** - Team management, leave approvals
+  - **Employee** - Self-service access only
+- **Permission-Based UI** - Menu items and buttons hidden based on user permissions
+- **32 Granular Permissions** across all modules
+- **User Management** - Assign roles to users, change passwords
 
-### 9. **Performance Reviews**
-- Periodic performance evaluations
-- Multi-criteria ratings
-- Overall rating calculation
-- Goal setting
+### ⚙️ Settings & Configuration
+- Company settings management
+- Leave types configuration
+- Position management
+- Holiday calendar
+- **Attendance Settings** - Configure check-in/check-out rules
+- Roles & permissions management
+- User management with role assignment
 
-### 10. **Additional Features**
-- Dashboard with key metrics
-- Announcements system
-- Holiday management
-- Document management
-- Birthday reminders
+### 📱 Employee Self-Service
+- Dashboard with attendance status
+- Quick check-in/check-out buttons
+- View personal attendance history
+- Apply for leaves
+- View leave balances
+- Download payslips
+- Update profile information
+
+### 📄 Document Management
+- Upload employee documents (ID Card, Contract, Certificates, Other)
+- Download documents
+- Organize by document type
+- Delete documents with confirmation
+
+### 🎨 User Interface
+- Clean, modern Bootstrap 5 design
+- Odoo purple theme (#714b67)
+- Responsive layout
+- Bootstrap Icons
+- Real-time time display
+- Color-coded status badges
+- Interactive calendar views
 
 ## 🚀 Installation
 
@@ -86,27 +123,19 @@ A comprehensive employee management system inspired by Odoo, built with Laravel 
 
 ### Setup Steps
 
-1. **Install PHP dependencies**
+1. **Install dependencies**
 ```bash
 composer install
-```
-
-2. **Install NPM dependencies**
-```bash
 npm install
 ```
 
-3. **Create environment file**
+2. **Environment setup**
 ```bash
 copy .env.example .env
-```
-
-4. **Generate application key**
-```bash
 php artisan key:generate
 ```
 
-5. **Configure database in .env**
+3. **Configure database in .env**
 ```env
 DB_CONNECTION=mysql
 DB_HOST=127.0.0.1
@@ -116,27 +145,19 @@ DB_USERNAME=root
 DB_PASSWORD=
 ```
 
-6. **Run migrations**
+4. **Database setup**
 ```bash
 php artisan migrate
-```
-
-7. **Seed the database**
-```bash
 php artisan db:seed
 ```
 
-8. **Create storage link**
+5. **Storage and assets**
 ```bash
 php artisan storage:link
-```
-
-9. **Build assets**
-```bash
 npm run build
 ```
 
-10. **Start the development server**
+6. **Start server**
 ```bash
 php artisan serve
 ```
@@ -149,83 +170,70 @@ Visit: `http://localhost:8000`
 - Email: `admin@example.com`
 - Password: `password`
 
-## 📊 Database Schema
+## � Required Packages
 
-### Main Tables
-1. **employees** - Employee information
-2. **departments** - Department structure
-3. **positions** - Job positions
-4. **contracts** - Employment contracts
-5. **attendances** - Daily attendance records
-6. **leave_types** - Types of leaves
-7. **leave_requests** - Leave applications
-8. **leave_balances** - Employee leave balances
-9. **payrolls** - Salary records
-10. **skills** - Skill definitions
-11. **performance_reviews** - Performance evaluations
-12. **holidays** - Company holidays
-13. **announcements** - Company announcements
-14. **documents** - Employee documents
+- `maatwebsite/excel` - Excel/CSV import/export
+- `barryvdh/laravel-dompdf` - PDF generation
+- Laravel 12 framework
 
-## 🎨 Technologies Used
+## 🎯 Key Highlights
+
+✅ **Odoo-Inspired UI/UX** - Professional enterprise look and feel
+✅ **Role-Based Access Control** - Granular permissions system
+✅ **Employee Self-Service** - Empower employees with self-check-in and profile management
+✅ **Time-Based Validation** - Admin-configurable attendance time windows
+✅ **Bulk Operations** - Import/Export employees, bulk payroll generation
+✅ **Visual Calendar** - Leave calendar with color-coded events
+✅ **Document Management** - Centralized employee document storage
+✅ **Comprehensive Reporting** - PDF and Excel exports
+✅ **Auto-Calculations** - Worked hours, late detection, leave balance
+✅ **Dashboard Analytics** - Real-time metrics and quick actions
+
+## 🔧 Core Technologies
 
 - **Backend:** Laravel 12 (PHP 8.2)
 - **Frontend:** Bootstrap 5, Bootstrap Icons
 - **Database:** MySQL
-- **Charts:** Chart.js
+- **Libraries:** 
+  - FullCalendar - Calendar views
+  - Maatwebsite Excel - Data export/import
+  - DomPDF - PDF generation
 
-## 🎯 Odoo-Inspired Features
+## 📝 Usage
 
-✅ **Hierarchical Structure** - Departments and positions with parent-child relationships
-✅ **Status Tracking** - Active/Inactive status for all entities
-✅ **Color Coding** - Visual organization with color-coded items
-✅ **Workflow Management** - Approval flows for leaves and payroll
-✅ **Multi-level Relationships** - Manager, Coach, Department hierarchies
-✅ **Comprehensive Filtering** - Advanced search and filter options
-✅ **Bulk Operations** - Batch processing for payroll
-✅ **Dashboard Analytics** - Key metrics and trends
-✅ **Document Management** - File attachments and document tracking
-✅ **Audit Trail** - Timestamps and user tracking
+### For Employees
+1. Login with employee credentials
+2. Check-in/out from dashboard or attendance page
+3. View personal attendance history
+4. Apply for leaves
+5. Download payslips
+6. Update profile
 
-## 📝 Usage Examples
+### For HR/Admins
+1. Manage employees (Create, Edit, Delete)
+2. Import employees from Excel/CSV
+3. Configure attendance time windows
+4. Mark attendance manually
+5. Approve/reject leave requests
+6. Generate and process payroll
+7. Generate reports (PDF/Excel)
+8. Assign roles to users
 
-### Creating an Employee
-1. Navigate to Employees → Add Employee
-2. Fill in personal information
-3. Select department and position
-4. Assign manager and save
-
-### Processing Payroll
-1. Navigate to Payroll → Create
-2. Select month and year
-3. Click "Generate Bulk" for all employees
-4. Review and edit individual payrolls
-5. Process payrolls and mark as paid
-
-### Managing Attendance
-1. Navigate to Attendance
-2. Employees can check-in/out themselves
-3. Or HR can mark attendance manually
-4. View daily/monthly reports
+### For Managers
+1. View team attendance
+2. Approve team leave requests
+3. Access team reports
 
 ## 🔐 Security Features
 
 - Password hashing with bcrypt
 - CSRF protection
+- Role-based access control
+- Permission-based UI rendering
+- Backend authorization checks
 - SQL injection prevention (Eloquent ORM)
 - File upload validation
-- User authentication
-
-## 🚧 Future Enhancements
-
-- [ ] Multi-tenant support
-- [ ] Advanced reporting with exports (PDF, Excel)
-- [ ] Email notifications
-- [ ] Biometric integration
-- [ ] Mobile app
-- [ ] Project management integration
-- [ ] Training management
-- [ ] Recruitment module
+- IP logging for attendance
 
 ## 📄 License
 
