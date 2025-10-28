@@ -31,7 +31,7 @@
                         @if($todayAttendance->check_out)
                             and checked out at {{ $todayAttendance->check_out }}
                         @else
-                            <form action="{{ route('attendance.checkout', $todayAttendance) }}" method="POST" class="mt-3">
+                            <form action="{{ route('attendance.employee.checkOut') }}" method="POST" class="mt-3">
                                 @csrf
                                 <button type="submit" class="btn btn-warning btn-lg">
                                     <i class="bi bi-box-arrow-right"></i> Check Out Now
@@ -40,13 +40,8 @@
                         @endif
                     </div>
                 @else
-                    <form action="{{ route('attendance.store') }}" method="POST">
+                    <form action="{{ route('attendance.employee.checkIn') }}" method="POST">
                         @csrf
-
-                        <input type="hidden" name="date" value="{{ now()->format('Y-m-d') }}">
-                        <input type="hidden" name="check_in" value="{{ now()->format('H:i:s') }}">
-                        <input type="hidden" name="status" value="present">
-
                         <div class="text-center">
                             <button type="submit" class="btn btn-primary btn-lg px-5">
                                 <i class="bi bi-box-arrow-in-right"></i> Check In Now

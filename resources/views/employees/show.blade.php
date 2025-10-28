@@ -37,6 +37,9 @@
                     <a href="{{ route('employees.edit', $employee) }}" class="btn btn-primary">
                         <i class="bi bi-pencil"></i> Edit Employee
                     </a>
+                    <a href="{{ route('employees.documents.index', $employee) }}" class="btn btn-info">
+                        <i class="bi bi-file-earmark-text"></i> Documents
+                    </a>
                     <form action="{{ route('employees.destroy', $employee) }}" method="POST" class="d-inline">
                         @csrf
                         @method('DELETE')
