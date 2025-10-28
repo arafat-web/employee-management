@@ -32,6 +32,19 @@
             </a>
         </div>
 
+        <!-- Attendance Settings -->
+        <div class="col-md-6 col-lg-4 mb-4">
+            <a href="{{ route('settings.attendance') }}" class="text-decoration-none">
+                <div class="table-card text-center hover-shadow" style="cursor: pointer;">
+                    <div class="stat-icon mx-auto mb-3" style="width: 80px; height: 80px; background: rgba(23, 162, 184, 0.1); color: #17a2b8;">
+                        <i class="bi bi-clock-history" style="font-size: 40px;"></i>
+                    </div>
+                    <h5>Attendance Settings</h5>
+                    <p class="text-muted mb-0">Configure check-in/check-out rules</p>
+                </div>
+            </a>
+        </div>
+
         <!-- Positions -->
         <div class="col-md-6 col-lg-4 mb-4">
             <a href="{{ route('settings.positions') }}" class="text-decoration-none">
@@ -68,6 +81,19 @@
                     </div>
                     <h5>Roles & Permissions</h5>
                     <p class="text-muted mb-0">Manage user roles and access control</p>
+                </div>
+            </a>
+        </div>
+
+        <!-- User Management -->
+        <div class="col-md-6 col-lg-4 mb-4">
+            <a href="{{ route('users.index') }}" class="text-decoration-none">
+                <div class="table-card text-center hover-shadow" style="cursor: pointer;">
+                    <div class="stat-icon mx-auto mb-3" style="width: 80px; height: 80px; background: rgba(108, 117, 125, 0.1); color: #6c757d;">
+                        <i class="bi bi-person-gear" style="font-size: 40px;"></i>
+                    </div>
+                    <h5>User Management</h5>
+                    <p class="text-muted mb-0">Manage users and assign roles</p>
                 </div>
             </a>
         </div>
