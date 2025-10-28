@@ -48,6 +48,9 @@
                 <a href="{{ route('reports.index') }}" class="btn btn-outline-secondary">
                     <i class="bi bi-arrow-left"></i> Back
                 </a>
+                <a href="{{ route('reports.payroll.pdf', request()->all()) }}" class="btn btn-danger">
+                    <i class="bi bi-file-pdf"></i> Export PDF
+                </a>
                 <button onclick="window.print()" class="btn btn-primary">
                     <i class="bi bi-printer"></i> Print
                 </button>
