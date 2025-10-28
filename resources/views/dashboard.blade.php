@@ -4,6 +4,71 @@
 @section('page-title', 'Dashboard')
 
 @section('content')
+    <!-- Employee Check-in/Check-out Section (Only for employees) -->
+    @if(auth()->user()->employee)
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card shadow-sm border-0">
+                    <div class="card-body">
+                        <div class="row align-items-center">
+                            <div class="col-md-4">
+                                <h5 class="mb-2"><i class="bi bi-clock"></i> Today's Attendance</h5>
+                                <p class="text-muted mb-0">{{ now()->format('l, F d, Y') }}</p>
+                            </div>
+                            <div class="col-md-4 text-center">
+                                @php
+                                    $todayAttendanceRecord = \App\Models\Attendance::where('employee_id', auth()->user()->employee->id)
+                                        ->where('date', today())
+                                        ->first();
+                                @endphp
+
+                                @if($todayAttendanceRecord)
+                                    <div class="attendance-time">
+                                        <div class="mb-2">
+                                            <strong>Check-in:</strong> <span class="text-success">{{ $todayAttendanceRecord->check_in ?? 'N/A' }}</span>
+                                        </div>
+                                        <div>
+                                            <strong>Check-out:</strong>
+                                            <span class="text-{{ $todayAttendanceRecord->check_out ? 'danger' : 'muted' }}">
+                                                {{ $todayAttendanceRecord->check_out ?? 'Not checked out' }}
+                                            </span>
+                                        </div>
+                                    </div>
+                                @else
+                                    <div class="text-muted">
+                                        <i class="bi bi-clock-history fs-2"></i>
+                                        <p class="mb-0">No attendance recorded today</p>
+                                    </div>
+                                @endif
+                            </div>
+                            <div class="col-md-4 text-end">
+                                @if(!$todayAttendanceRecord || !$todayAttendanceRecord->check_in)
+                                    <form action="{{ route('attendance.employee.checkIn') }}" method="POST" class="d-inline">
+                                        @csrf
+                                        <button type="submit" class="btn btn-success btn-lg">
+                                            <i class="bi bi-box-arrow-in-right"></i> Check In
+                                        </button>
+                                    </form>
+                                @elseif(!$todayAttendanceRecord->check_out)
+                                    <form action="{{ route('attendance.employee.checkOut') }}" method="POST" class="d-inline">
+                                        @csrf
+                                        <button type="submit" class="btn btn-danger btn-lg">
+                                            <i class="bi bi-box-arrow-right"></i> Check Out
+                                        </button>
+                                    </form>
+                                @else
+                                    <div class="alert alert-success mb-0">
+                                        <i class="bi bi-check-circle"></i> Attendance completed for today
+                                    </div>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endif
+
     <!-- Statistics Cards -->
     <div class="row">
         <div class="col-md-3">
