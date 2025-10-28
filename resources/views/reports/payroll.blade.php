@@ -43,7 +43,10 @@
 
     <div class="table-card">
         <div class="d-flex justify-content-between align-items-center mb-4">
-            <h5 class="mb-0">Payroll Report - {{ $months[$month] }} {{ $year }}</h5>
+            @php
+                $monthLabel = (is_int($month) || is_string($month)) ? ($months[$month] ?? '') : '';
+            @endphp
+            <h5 class="mb-0">Payroll Report - {{ $monthLabel }} {{ $year }}</h5>
             <div>
                 <a href="{{ route('reports.index') }}" class="btn btn-outline-secondary">
                     <i class="bi bi-arrow-left"></i> Back
