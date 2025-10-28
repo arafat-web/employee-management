@@ -230,30 +230,63 @@
             <a href="{{ route('dashboard') }}" class="nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}">
                 <i class="bi bi-speedometer2"></i> Dashboard
             </a>
+
+            @if(auth()->user()->hasPermission('view_employees'))
             <a href="{{ route('employees.index') }}" class="nav-link {{ request()->routeIs('employees.*') ? 'active' : '' }}">
                 <i class="bi bi-people"></i> Employees
             </a>
+            @endif
+
+            @if(auth()->user()->hasPermission('view_departments'))
             <a href="{{ route('departments.index') }}" class="nav-link {{ request()->routeIs('departments.*') ? 'active' : '' }}">
                 <i class="bi bi-diagram-3"></i> Departments
             </a>
+            @endif
+
+            @if(auth()->user()->hasPermission('view_attendance'))
             <a href="{{ route('attendance.index') }}" class="nav-link {{ request()->routeIs('attendance.*') ? 'active' : '' }}">
                 <i class="bi bi-calendar-check"></i> Attendance
             </a>
+            @endif
+
+            @if(auth()->user()->hasPermission('view_leaves'))
             <a href="{{ route('leaves.index') }}" class="nav-link {{ request()->routeIs('leaves.*') ? 'active' : '' }}">
                 <i class="bi bi-calendar-x"></i> Leaves
             </a>
+            @endif
+
+            @if(auth()->user()->hasPermission('view_payroll'))
             <a href="{{ route('payroll.index') }}" class="nav-link {{ request()->routeIs('payroll.*') ? 'active' : '' }}">
                 <i class="bi bi-cash-stack"></i> Payroll
             </a>
+            @endif
+
+            @if(auth()->user()->hasPermission('view_performance'))
             <a href="{{ route('performance.index') }}" class="nav-link {{ request()->routeIs('performance.*') ? 'active' : '' }}">
                 <i class="bi bi-graph-up"></i> Performance
             </a>
+            @endif
+
+            @if(auth()->user()->hasPermission('view_reports'))
             <a href="{{ route('reports.index') }}" class="nav-link {{ request()->routeIs('reports.*') ? 'active' : '' }}">
                 <i class="bi bi-file-earmark-text"></i> Reports
             </a>
+            @endif
+
+            @if(auth()->user()->hasPermission('view_settings') || auth()->user()->canManageRoles())
             <a href="{{ route('settings.index') }}" class="nav-link {{ request()->routeIs('settings.*') ? 'active' : '' }}">
                 <i class="bi bi-gear"></i> Settings
             </a>
+            @endif
+
+            @if(auth()->user()->canManageRoles())
+            <a href="{{ route('roles.index') }}" class="nav-link {{ request()->routeIs('roles.*') ? 'active' : '' }}">
+                <i class="bi bi-shield-lock"></i> Roles & Permissions
+            </a>
+            <a href="{{ route('users.index') }}" class="nav-link {{ request()->routeIs('users.*') ? 'active' : '' }}">
+                <i class="bi bi-person-gear"></i> User Management
+            </a>
+            @endif
         </nav>
     </div>
 

@@ -9,9 +9,14 @@
             <h5 class="mb-0">Leave Requests</h5>
             <p class="text-muted mb-0">Manage employee leave requests and balances</p>
         </div>
-        <a href="{{ route('leaves.create') }}" class="btn btn-primary">
-            <i class="bi bi-plus-circle"></i> New Leave Request
-        </a>
+        <div>
+            <a href="{{ route('leaves.calendar') }}" class="btn btn-info">
+                <i class="bi bi-calendar3"></i> Calendar View
+            </a>
+            <a href="{{ route('leaves.create') }}" class="btn btn-primary">
+                <i class="bi bi-plus-circle"></i> New Leave Request
+            </a>
+        </div>
     </div>
 
     @if(session('success'))
